@@ -1,0 +1,71 @@
+@import '../../styles/vars';
+@import '../../styles/placeholders';
+
+.list-items {
+  margin: 0 0 20px;
+  padding-left: 0;
+  list-style: none;
+  @extend %clearfix;
+  .item {
+    width: 100%;
+    margin: 0 auto 10px;
+    &:hover {
+      background-color: $light-white;
+      box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.2);
+      transition: box-shadow 0.3s ease-out;
+    }
+    @extend %clearfix;
+    .item-img {
+      max-width: 100%;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+  }
+  .item-side {
+    width: 50%;
+    padding: 0 5px 0 0;
+    float: left;
+    text-align: right;
+  }
+  .item-main {
+    width: 50%;
+    padding: 10px 0 0 5px;
+    float: left;
+  }
+  .item-name {
+    text-transform: capitalize;
+  }
+}
+
+@media screen and (min-width: $tablet-width){
+  .list-items {
+    max-width: 600px;
+    margin: 0 auto 20px;
+    .item {
+      width: 50%;
+      margin-bottom: 30px;
+      float: left;
+    }
+    .item-side,
+    .item-main {
+      float: none;
+      width: 100%;
+      text-align: center;
+    }
+    .item-main {
+      margin-top: -8px;
+      padding-top: 0;
+    }
+  }
+}
+
+@media screen and (min-width: $desktop-width){
+  .list-items {
+    max-width: 1200px;
+    .item {
+      width: 25%;
+      margin-bottom: 40px;
+    }
+  }
+}

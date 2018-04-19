@@ -1,29 +1,77 @@
-.App {
-  text-align: center;
-  border: 2px solid maroon;
+@import '../../styles/vars';
+@import '../../styles/placeholders';
+
+body {
+  margin: 0 auto;
+  padding: 0;
+  color: $primary-color;
+  font-family: $font-stack;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+.hero-section {
+  background: transparent url('../../images/hero-background.jpg') 50% 50% no-repeat;
+  background-size: cover;
+  height: 30vh;
+  padding: 20px 20px;
+  .hero-section-heading {
+    color: $white;
+    font-size: 24px;
+    text-align: center;
+  }
 }
 
-.App-header {
-  background-color: #222;
-  height: 150px;
+.main-section {
+  margin: 20px auto;
+}
+
+.progress {
+  @extend %spinner;
+}
+
+.alert-section {
+  margin: 0 auto;
+}
+.alert-error {
+  margin: 0 auto;
   padding: 20px;
-  color: white;
+  text-align: center;
+  color: $alert-red;
+  border-color: $alert-light-red;
+  background-color: $alert-light-red;
+  .alert-heading {
+    margin-bottom: 20px;
+    line-height: 1;
+  }
 }
 
-.App-title {
-  font-size: 1.5em;
+/* Mobile first responsive */
+@media screen and (min-width: $tablet-width){
+  .hero-section {
+    padding: 40px 70px;
+    .hero-section-heading {
+      font-size: 30px;
+      text-align: left;
+    }
+  }
+  .alert-heading,
+  .alert-main {
+    margin: 0 auto;
+    max-width: 700px;
+  }
 }
 
-.App-intro {
-  font-size: large;
+@media screen and (min-width: $desktop-width){
+  .hero-section {
+    min-height: 523px;
+    padding: 100px 200px;
+    .hero-section-heading {
+      font-size: 34px;
+    }
+  }
 }
 
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+@media screen and (min-width: $extra-large-width){
+  .main-section {
+    max-width: 1200px;
+  }
 }

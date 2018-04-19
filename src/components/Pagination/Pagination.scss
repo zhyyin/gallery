@@ -1,0 +1,42 @@
+@import '../../styles/vars';
+@import '../../styles/placeholders';
+
+.list-paginations {
+  margin-left: 0;
+  margin-bottom: 20px;
+  padding-left: 0;
+  list-style: none;
+  text-align: center;
+  font-size: 14px;
+  @extend %clearfix;
+  .pagination {
+    display: inline-block;
+    + .pagination {
+      .pagination-link {  
+        border-left: none;
+      }
+    }
+    &.disabled {
+      .pagination-link {
+        color: #777;
+        border-color: $grey;
+        background-color: $light-grey;
+        cursor: not-allowed;
+        outline: 0;
+      }
+    }
+  }
+  .pagination-link {
+    padding: 5px 10px;
+    border: 1px solid $grey;
+    display: inline-block;
+    color: $link-blue;
+    background-color: $white;
+    text-decoration: none;
+    &:hover {
+      color: $white;
+      background-color: $link-blue;
+      border-color: $link-blue;
+    }
+  }
+}

@@ -1,0 +1,57 @@
+%clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(1turn); }
+}
+
+%spinner{
+  & {
+    position: relative;
+    width: 5em;
+    height: 5em;
+    margin: 0 auto;
+    font-size: 16px;
+    text-indent: 999em;
+    overflow: hidden;
+    animation: spin 1s infinite steps(8);
+    &:before,
+    &:after,
+    & > div:before,
+    & > div:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 2.25em;
+      width: .5em;
+      height: 1.5em;
+      border-radius: .2em;
+      background: $light-grey;
+      box-shadow: 0 3.5em $light-grey;
+      transform-origin: 50% 2.5em;
+    }
+    &:before {
+      background: #555;
+    }
+
+    &:after {
+      transform: rotate(-45deg);
+      background: #777;
+    }
+
+    & > .loading-text:before {
+      transform: rotate(-90deg);
+      background: #999;
+    }
+
+    & > .loading-text:after {
+      transform: rotate(-135deg);
+      background: #bbb;
+    }
+  }
+}

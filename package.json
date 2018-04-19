@@ -3,20 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^4.1.0",
+    "classnames": "^2.2.5",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "node-sass-chokidar": "^1.2.2",
     "npm-run-all": "^4.1.2",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "react-test-renderer": "^16.3.2"
   },
   "scripts": {
-    "build-css": "NODE_PATH=src node-sass-chokidar src/ -o src/",
-    "watch-css": "NODE_PATH=src npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
-    "start-js": "NODE_PATH=src react-scripts start",
+    "build-css": "node-sass-chokidar src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "start-js": "react-scripts start",
     "start": "NODE_PATH=src npm-run-all -p watch-css start-js",
-    "build-js": "NODE_PATH=src react-scripts build",
+    "build-js": "react-scripts build",
     "build": "NODE_PATH=src npm-run-all build-css build-js",
     "test": "NODE_PATH=src react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "fetch-mock": "^6.3.0"
   }
 }
