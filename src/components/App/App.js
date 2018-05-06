@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import 'bootstrap/dist/css/bootstrap-reboot.css';
 import styles from './App.css';
+import withData from '../withData/withData';
 import ListItems from '../ListItems/ListItems';
 import Search from '../Search/Search';
 import Pagination from '../Pagination/Pagination';
@@ -38,8 +39,10 @@ class App extends Component {
     this.setState({
       isLoading: true
     });
+  }
 
-    this.loadPoken();
+  componentWillReceiveProps(nextProps) {
+    this.loadPokemon(nextProps);
   }
 
   render() {
@@ -84,50 +87,30 @@ class App extends Component {
     );
   }
 
-  loadPoken = () => {
-    return new Promise((ok,fail) => {
-      const {apiUrl} = this.props;
+  loadPokemon = (nextProps) => {
+    const {itemsPerPage} = this.props;
+    const {data, isLoadingError, isLoading} = nextProps;
+
+    if (isLoadingError) {
       this.setState({
-        isLoading: true
+        isLoading,
+        isLoadingError
       });
-
-      fetch(apiUrl)
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Request fail');
-          }
-        })
-        .then(data => {
-          let isLoading = false;
-
-          if (data.results && Array.isArray(data.results) && data.results.length > 0) {
-            let items = data.results;
-            let currentPage = 1;
-            let itemStart = 0;
-            let itemEnd = Math.min(this.props.itemsPerPage, data.results.length) - 1;
-            this.setState({
-              items,
-              isLoading,
-              currentPage,
-              itemStart,
-              itemEnd
-            });
-          } else {
-            this.setState({
-              isLoading
-            });
-          }
-        })
-        .catch(error =>
-          {
-          this.setState({
-            isLoading: false,
-            isLoadingError: true
-          })}
-        );
-    });
+    } else if (data.results && Array.isArray(data.results) && data.results.length > 0) {
+      let items = data.results;
+      let itemEnd = Math.min(itemsPerPage, items.length) - 1;
+      this.setState({
+        items: items,
+        isLoading: false,
+        currentPage: 1,
+        itemStart: 0,
+        itemEnd: itemEnd
+      });
+    } else {
+      this.setState({
+        isLoading: false
+      });
+    }
   };
 
   handlePaginationClick = (currentPage, totalPages) => (e) => {
@@ -162,7 +145,6 @@ class App extends Component {
 
 /* Import all images dynamically via Webpack */
 let images = {};
-/* istanbul ignore next */
 function importAll(r) {
   let assets = {};
   r.keys().map((item, index) => {
@@ -170,9 +152,10 @@ function importAll(r) {
   });
   return assets;
 }
-/* istanbul ignore next */
+
 try {
   images = importAll(require.context('../../images', false, /\.png/));
 } catch (error) {}
 
-export default App;
+// props are unknown at the moment we apply withData HoC
+export default withData(props => props.apiUrl)(App);
