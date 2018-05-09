@@ -10,11 +10,19 @@ const withData = url => WrappedComponent => (
     componentDidMount() {
       // A string, or a function, which receives component's props and returns a URL that depends on received parameters.
       const endpoint = typeof url === 'function' ? url(this.props) : url;
-      console.log('this:', this);
+      // console.log('this:', this);
+
+      this.setState({
+        isLoading: true
+      });
 
       fetch(endpoint)
         .then(response => response.json())
-        .then(data => this.setState({ data }))
+        .then(data => this.setState({
+          isLoading: false,
+          isLoadingError: false,
+          data: data
+        }))
         .catch(error => this.setState({
           isLoading: false,
           isLoadingError: true

@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import { compose, branch, renderComponent } from 'recompose'
 import classNames from 'classnames/bind';
 import 'bootstrap/dist/css/bootstrap-reboot.css';
 import styles from './App.css';
 import withData from '../withData/withData';
+import withLoader from '../withLoader/withLoader';
 import ListItems from '../ListItems/ListItems';
 import Search from '../Search/Search';
 import Pagination from '../Pagination/Pagination';
+import Spinner from '../Spinner/Spinner';
 
 let cx = classNames.bind(styles);
 
@@ -30,15 +33,12 @@ class App extends Component {
     currentPage: null,
     itemStart: null,
     itemEnd: null,
-    isLoading: false,
     isLoadingError: false,
     searchTerm: ''
   }
 
   componentDidMount() {
-    this.setState({
-      isLoading: true
-    });
+    this.loadPokemon(this.props);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -46,8 +46,8 @@ class App extends Component {
   }
 
   render() {
-    const {itemsPerPage, alertHeading, alertMain} = this.props;
-    const {currentPage, searchTerm, items, isLoading, isLoadingError, itemStart, itemEnd} = this.state;
+    const {itemsPerPage, alertHeading, alertMain, isLoading, isLoadingError} = this.props;
+    const {currentPage, searchTerm, items, itemStart, itemEnd} = this.state;
 
     let filteredItems = items;
     if (searchTerm) {
@@ -56,6 +56,7 @@ class App extends Component {
     const totalCount = Array.isArray(filteredItems) ? filteredItems.length : 0;
     const totalPages = Math.ceil(totalCount / itemsPerPage);
     const hasListItems = filteredItems && filteredItems.slice(itemStart, itemEnd + 1);
+    //console.log('isLoading:', isLoading, ' isLoadingError:', isLoadingError, ' filteredItems:', filteredItems, 'hasListItems:', hasListItems);
 
     return (
       <div className={cx('app')}>
@@ -65,50 +66,39 @@ class App extends Component {
           </div>
         </div>
         <div className={cx('main-section')}>
-          { isLoading
-            ? (<div className={cx('progress')}>
-                <div className={cx('loading-text')}>Loading...</div>
-              </div>)
-            : (hasListItems && !isLoadingError)
-              ? <div>
-                  <Search id="search-term" placeholder="Search by name" searchTerm={searchTerm} handleSearch={this.handleSearch} />
-                  <ListItems items={items} filteredItems={filteredItems.slice(itemStart, itemEnd + 1)} images={images} />
-                  <Pagination currentPage={currentPage} totalPages={totalPages} handlePaginationClick={this.handlePaginationClick} />
-                </div>
-              : <div className={cx('alert-section')}>
-                  <div className={cx('alert-error')}>
-                    <h2 className={cx('alert-heading')}>{alertHeading}</h2>
-                    <p className={cx('alert-main')}>{alertMain}</p>
+          { !isLoading &&
+              (
+                (hasListItems && !isLoadingError)
+                ? <div>
+                    <Search id="search-term" placeholder="Search by name" searchTerm={searchTerm} handleSearch={this.handleSearch} />
+                    <ListItems items={items} filteredItems={filteredItems.slice(itemStart, itemEnd + 1)} images={images} />
+                    <Pagination currentPage={currentPage} totalPages={totalPages} handlePaginationClick={this.handlePaginationClick} />
                   </div>
-                </div>
+                : <div className={cx('alert-section')}>
+                    <div className={cx('alert-error')}>
+                      <h2 className={cx('alert-heading')}>{alertHeading}</h2>
+                      <p className={cx('alert-main')}>{alertMain}</p>
+                    </div>
+                  </div>
+              )
           }
         </div>
       </div>
     );
   }
 
-  loadPokemon = (nextProps) => {
+  loadPokemon = (props) => {
     const {itemsPerPage} = this.props;
-    const {data, isLoadingError, isLoading} = nextProps;
+    const {data, isLoadingError, isLoading} = props;
 
-    if (isLoadingError) {
-      this.setState({
-        isLoading,
-        isLoadingError
-      });
-    } else if (data.results && Array.isArray(data.results) && data.results.length > 0) {
+    if (data.results && Array.isArray(data.results) && data.results.length > 0) {
       let items = data.results;
       let itemEnd = Math.min(itemsPerPage, items.length) - 1;
       this.setState({
         items: items,
-        isLoading: false,
         currentPage: 1,
         itemStart: 0,
         itemEnd: itemEnd
-      });
-    } else {
-      this.setState({
-        isLoading: false
       });
     }
   };
@@ -158,4 +148,7 @@ try {
 } catch (error) {}
 
 // props are unknown at the moment we apply withData HoC
-export default withData(props => props.apiUrl)(App);
+// const enhance = withData(props => props.apiUrl);
+const enhance = compose(withData(props => props.apiUrl), withLoader(Spinner));
+
+export default enhance(App);
